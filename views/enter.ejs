@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <% if(user) { %>
+        <h3>반갑습니다. <%= user.name %>님.</h3>
+        <a href="/logout">로그아웃</a>
+      <% } else { %>
+        <h3>로그인 해주세요.</h3>
+        <button class="login"><b>로그인</b></button>
+        <button class="signup"><b>회원가입</b></button>
+      <% } %>
+      
+      <script>
+        document.querySelector('.login').addEventListener('click', function() {
+          location.href = "/login";
+        });
+      
+        document.querySelector('.signup').addEventListener('click', function() {
+          location.href = "/register";
+        });
+      </script>      
+
+</body>
+</html>

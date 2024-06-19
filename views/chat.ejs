@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 채팅</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        #header {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background-color: #222;
+            border-bottom: 1px solid #444;
+        }
+        #header button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+        }
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-container {
+            margin: 5px 0;
+        }
+        .message {
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+        .my-message {
+            background-color: #4E4E4E;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .their-message {
+            background-color: #ffffff;
+            color: black;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .message-time {
+            font-size: 0.8em;
+            color: #888;
+        }
+        .message-name {
+            font-weight: bold;
+            color: rgb(251, 119, 4);
+            margin-bottom: 3px;
+        }
+        #message-input {
+            display: flex;
+        }
+        #message-input input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+        }
+        #message-input button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+        }
+        .back-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        background-color: #4E4E4E;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더와 채팅 창, 메시지 입력 부분은 이전과 동일하게 유지 -->
+    <div id="header">
+        <!-- 뒤로가기 버튼과 매칭하기 버튼 -->
+        <button class="back-button" onclick="goBackWithPartnerInfo()">뒤로가기</button>
+        <button onclick="matchUser()">매칭하기</button>
+    </div>
+    <div id="chat"></div>
+    <div id="message-input">
+        <input type="text" id="message" placeholder="메시지 입력...">
+        <button onclick="sendMessage()">보내기</button>
+    </div>
+
+    <script>
+        // WebSocket 연결 설정
+        const userId = '<%= user.email %>'; // 사용자의 실제 ID
+        const userName = '<%= user.name %>'; // 사용자의 실제 이름
+        const ws = new WebSocket('ws://localhost:8080');
+        let partnerId = null;
+        let chatRoomId = null;
+
+        // WebSocket 연결 이벤트 핸들러 설정
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'register', userId, userName }));
+        };
+
+        // WebSocket 메시지 수신 이벤트 핸들러 설정
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'match') {
+                partnerId = data.partnerId;
+                chatRoomId = data.chatRoomId;
+                partnerName = data.partnerName;
+                displayMessage(`매칭되었습니다! 상대방(${data.partnerName})과 대화를 시작하세요.`, 'system-message');
+            } else if (data.type === 'message') {
+                const receivedTime = new Date(data.time);
+                displayMessage(`<span class="message-name">${data.userName}</span>${data.text} <span class="message-time">${receivedTime.toLocaleTimeString()}</span>`, 'their-message');
+            } else if (data.type === 'status') {
+            displayMessage(data.message, 'system-message');
+            } else if (data.type === 'error') {
+            displayMessage(data.message, 'error-message');
+        }
+        };
+
+        // WebSocket 연결 종료 이벤트 핸들러 설정
+        ws.onclose = () => {
+            displayMessage('서버와의 연결이 종료되었습니다.', 'system-message');
+        };
+
+        // WebSocket 오류 발생 이벤트 핸들러 설정
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            displayMessage('서버와의 연결 중 오류가 발생했습니다.', 'error-message');
+        };
+
+        // 메시지 전송 함수 정의
+        function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value.trim(); // 입력 값에서 공백 제거
+            input.value = ''; // 입력 창 비우기
+
+            // 상대방이 있는 경우에만 메시지 전송
+            if (partnerId) {
+                const time = new Date().toISOString();
+                ws.send(JSON.stringify({ type: 'message', text: message, userId, userName, recipientId: partnerId, chatRoomId, time }));
+                displayMessage(`<span class="message-name">${userName}</span>${message} <span class="message-time">${new Date(time).toLocaleTimeString()}</span>`, 'my-message');
+            }
+            else {
+                displayMessage('상대방과 매칭된 후 채팅을 칠 수 있습니다.', 'system-message');
+            }
+            input.value = '';
+        }
+
+        // 메시지 표시 함수 정의
+        function displayMessage(message, className) {
+            const chat = document.getElementById('chat');
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = message;
+            messageElement.className = `message ${className}`;
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight; // 화면 하단으로 스크롤
+        }
+        
+        // 매칭 요청 함수 정의
+        function matchUser() {
+            ws.send(JSON.stringify({ type: 'match_request', userId, userName }));
+            displayMessage('매칭 중입니다. 잠시만 기다려주세요...', 'system-message');
+        }
+
+        // 채팅 종료 함수 정의
+        function goBackWithPartnerInfo() {
+        if (!partnerId) { // partnerId가 없는 경우, 즉 매칭이 되지 않은 경우
+            window.history.back(); // 이전 페이지로 돌아감
+        } else {
+        const partnerInfo = {
+            partnerId: partnerId,
+            partnerName: partnerName
+        };
+        localStorage.setItem('partnerInfo', JSON.stringify(partnerInfo));
+        window.location.href = '/mymate'; // 매칭이 된 경우, /mymate로 이동
+    }
+}
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #1C1C1C;
+            color: white;
+            font-family: 'Noto Sans', sans-serif;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        .container {
+            position: relative;
+            padding: 20px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .input-box {
+            width: 100%;
+            height: 80px;
+            background: white;
+            border-radius: 15px;
+            border: 2px #DAD7D7 solid;
+            margin: 20px 0;
+            position: relative;
+        }
+        .input-box input {
+            width: calc(100% - 40px);
+            height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 300;
+            color: #C9C9C9;
+            padding: 0 20px;
+        }
+        .button {
+            width: 100%;
+            height: 80px;
+            background: #CD0707;
+            border-radius: 30px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .link, .signup {
+            width: fit-content;
+            margin: 10px auto;
+            cursor: pointer;
+        }
+        .link {
+            font-size: 14px;
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 300;
+            text-decoration: underline;
+        }
+        .signup {
+            font-size: 20px;
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 300;
+            text-decoration: underline;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            letter-spacing: 10px;
+            margin: 50px 0;
+            margin-right: 20px; 
+        }
+        .logo img {
+            height: 85px; /* 원하는 높이로 설정 */
+            width: auto; /* 비율에 맞게 너비 자동 조정 */
+            margin: 15px 15px 0; /* 이미지와 문자 간 간격 조절 */
+        }
+
+        
+        .time {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 32px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: 3.25px;
+        }
+        .extra-content {
+            display: flex;
+            justify-content: flex-end;
+            margin: 20px 0;
+        }
+        .extra-content img {
+            margin-left: 10px;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            .input-box {
+                height: 60px;
+            }
+            .button {
+                height: 60px;
+            }
+            .logo {
+                font-size: 50px;
+                letter-spacing: 5px;
+            }
+
+            .link {
+                font-size: 12px;
+            }
+            .signup {
+                font-size: 16px;
+            }
+            .extra-content img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            F
+            <img src="/images/로고.png">
+            TNER    
+        </div>
+
+        <form action = "/login" method="post">
+            <div class="input-box">
+                <input type="text" id="email" placeholder="휴대폰 번호 또는 이메일 주소">
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="password" placeholder="비밀번호">
+            </div>
+
+            <div class="link">비밀번호를 잊으셨나요?</div>
+
+            <div class="button" onclick="login()">로그인</div>
+
+            <div class="signup" onclick="goToSignUpPage()" >회원가입</div>
+        </form>
+
+    </div>
+
+    <script>
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+            if (data.loginSuccess) {
+                alert('로그인 성공!');
+                // 로그인 성공 시 추가 작업 (예: 페이지 이동)
+               
+                window.location.href = '/home'; // enter 페이지로 이동
+            } else {
+                alert('로그인 실패: ' + data.message);
+            }
+
+        }
+    </script>
+    <script>
+        function goToSignUpPage() {
+            // 페이지 이동
+            window.location.href = "/register"; 
+        }
+    </script>
+</body>
+</html>

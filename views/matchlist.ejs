@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매치리스트</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            position: relative; 
+        }
+        .nav-bar {
+            background-color: #ff0000;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .nav-item {
+            text-decoration: none;
+            color: #fff;
+        }
+        .btn-container {
+            display: flex;
+            width: 100%;
+        }
+        .btn-container .find-mate-btn, .btn-container .my-mate {
+            flex: 1;
+            height: 70px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .find-mate-btn {
+            background-color: #444343;
+            color: white;
+        }
+        .my-mate {
+            background-color: #444343;
+            color: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .good {
+            color: #ffffff;
+            font-size: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .filter-container {
+            position: absolute;
+            right: 20px;
+            top: 280px;
+            margin-top: 20px;
+        }
+        .filter-select {
+            background-color: #B1B1B1;
+            color: #000f;
+            border: none;
+            font-size: 16px;
+            padding: 10px;
+            cursor: pointer;
+            width: 80px;
+        }
+        .person-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px;
+        }
+        .person-box {
+    background-color: #333;
+    color: #fff;
+    width: 200px;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    margin-top: 60px; /* 추가된 부분: 정보 상자를 아래로 내림 */
+    background-image: url('/images/기본이미지.png'); /* 이미지 파일 경로 설정 */
+    background-size: cover;
+    background-position: center;
+}
+
+        .person-box.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        @media (max-width: 600px) {
+            .nav-bar {
+                flex-direction: column;
+            }
+            .nav-item {
+                margin-bottom: 5px;
+            }
+            .btn-container {
+                flex-direction: column;
+            }
+            .btn-container .find-mate-btn, .btn-container .my-mate {
+                width: 100%;
+            }
+        }
+        .nav-container {
+            background-color: #ff0000;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            position: relative;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            position: relative;
+            width: 18%;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        /* 서브 네비게이션 바 스타일링 */
+        .nav-container:hover .sub-nav-container {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .sub-nav-container {
+            background-color: #ff0000;
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 10px 0;
+            flex-direction: column;
+            align-items: center;
+            transition: visibility 0s, opacity 0.5s ease-in-out;
+        }
+
+        .sub-nav-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .sub-nav-item {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            width: 18%;
+            text-align: center;
+        }
+
+        .sub-nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <a href="/home" class="nav-item">홈</a>
+        <a href="/calendar" class="nav-item">일정 관리</a>
+        <a href="/routine" class="nav-item">루틴</a>
+        <a href="dead/1" class="nav-item">운동 목록</a>
+        <a href="/matchlist" class="nav-item">매칭하기</a>
+        <div class="sub-nav-container">
+            <div class="sub-nav-row">
+                <a href="/login" class="sub-nav-item">로그인</a>
+                <a href="/calendar/week" class="sub-nav-item">주별 관리</a>
+                <a href="/routine" class="sub-nav-item">나의 루틴</a>
+                <a href="#" class="sub-nav-item">가이드/메모</a>
+                <a href="#" class="sub-nav-item">프로필 보기</a>
+            </div>
+            <div class="sub-nav-row">
+                <a href="/home" class="sub-nav-item">공지사항</a>
+                <a href="/calendar" class="sub-nav-item">월별 관리</a>
+                <a href="/routine" class="sub-nav-item">전체 루틴</a>
+                <a href="#" class="sub-nav-item"></a>
+                <a href="/matchlist/user1" class="sub-nav-item">리뷰</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <div class="my-mate">운동메이트 찾기</div>
+        <button class="find-mate-btn" onclick="window.location.href='mymate'">나의 운동메이트 </button>
+    </div>
+
+    <div class="good">
+        최고의 운동 메이트를 찾아보세요.
+    </div>
+
+    <div class="filter-container">
+        <select class="filter-select" id="filter-select" onchange="filterPeople()">
+            <option value="normal">기본</option>
+            <option value="rating">별점</option>
+            <option value="latest">최신</option>
+        </select>
+    </div>
+
+    <div class="person-container" id="person-container">
+        <div class="person-box" data-rating="2" data-latest="2024-06-19">
+            <h3>헬린이</h3>
+            <p>평가 : 2</p>
+            <p>Latest: 2024-06-19</p>
+        </div>
+        <div class="person-box" data-rating="4" data-latest="2024-06-18">
+            <h3>헬창</h3>
+            <p>평가 : 4</p>
+            <p>Latest: 2024-06-18</p>
+        </div>
+        <div class="person-box" data-rating="3" data-latest="2024-06-17">
+            <h3>코치</h3>
+            <p>평가 : 3</p>
+            <p>Latest: 2024-06-17</p>
+        </div>
+        <div class="person-box" data-rating="5" data-latest="2024-06-16">
+            <h3>피트너</h3>
+            <p>평가: 5</p>
+            <p>Latest: 2024-06-16</p>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const personBoxes = document.querySelectorAll('.person-box');
+
+        personBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                // 각 person-box를 클릭했을 때의 동작을 정의합니다.
+                const pageUrl = '/matchlist/user1'; // 넘어갈 페이지 URL
+                window.location.href = pageUrl;
+            });
+        });
+    });
+    
+        function filterPeople() {
+    const filter = document.getElementById('filter-select').value;
+    const peopleContainer = document.getElementById('person-container');
+    const people = Array.from(document.querySelectorAll('.person-box'));
+
+    // 선택한 필터에 따라 정렬합니다.
+    if (filter === 'rating') {
+        people.sort((a, b) => {
+            const ratingA = parseInt(a.getAttribute('data-rating'));
+            const ratingB = parseInt(b.getAttribute('data-rating'));
+            return ratingB - ratingA; // 높은 순서대로 정렬
+        });
+    } else if (filter === 'latest') {
+        people.sort((a, b) => {
+            const latestA = new Date(a.getAttribute('data-latest'));
+            const latestB = new Date(b.getAttribute('data-latest'));
+            return latestB - latestA; // 최신 순서대로 정렬
+        });
+    }
+
+    // 정렬된 순서에 따라 화면에 배치합니다.
+    people.forEach(person => {
+        peopleContainer.appendChild(person);
+    });
+}
+
+    </script>
+</body>
+</html>

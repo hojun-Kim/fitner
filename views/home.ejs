@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FITNER</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: #fff;
+        }
+
+        /* 네비게이션 바 */
+        .nav-container {
+            background-color: #ff0000;
+            color: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            position: relative;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            position: relative;
+            width: 18%;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        /* 서브 네비게이션 바 스타일링 */
+        .nav-container:hover .sub-nav-container {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .sub-nav-container {
+            background-color: #ff0000;
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 10px 0;
+            flex-direction: column;
+            align-items: center;
+            transition: visibility 0s, opacity 0.5s ease-in-out;
+        }
+
+        .sub-nav-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .sub-nav-item {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            width: 18%;
+            text-align: center;
+        }
+
+        .sub-nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        .header {
+            background-color: #222;
+            text-align: center;
+            padding: 60px 20px 20px 20px;
+            position: relative;
+            background-image: url('/images/홈화면.png');
+        }
+
+        .header-content {
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .header button {
+            background-color: #d11a1a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 10px;
+        }
+
+        section {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        section h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        section p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        section button {
+            background-color: #d11a1a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .schedule-gym-finder {
+            display: flex;
+            gap: 10px;
+            background-color: #1c1c1c;
+        }
+
+        .schedule, .gym-finder {
+            flex: 1;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .schedule {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            background-color: #3C3B3B;
+            width: 200px;
+            height: 200px;
+            border-radius: 35px;
+            text-align: left;
+            font-weight: bold;
+            flex-direction: column;
+            background-image: url('path/to/schedule-icon.png'); /* Add your image path here */
+            background-repeat: no-repeat;
+            background-position: center 10px;
+        }
+
+        .gym-finder {
+            background-image: url('path_to_image.png');
+            background-position: 100px 100px; /* Set the coordinates */
+            background-size: cover;
+            background-color: #3C3B3B;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 300px;
+            height: 200px;
+            border-radius: 35px;
+            text-align: left;
+            font-weight: bold;
+            padding: 0.px;
+            flex-direction: column;
+            background-image: url('path/to/gym-finder-icon.png'); /* Add your image path here */
+            background-repeat: no-repeat;
+            background-position: center 10px;
+        }
+
+        .announcements {
+            text-align: left;
+            padding: 20px;
+            position: relative;
+        }
+
+        .announcements p {
+            margin: 5px 0;
+        }
+
+        .announcements p.date {
+            position: absolute;
+            top: 71px;
+            right: 30px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #222;
+        }
+
+        .profile .image-placeholder {
+            width: 150px;
+            height: 150px;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            border-radius: 10px;
+            margin-right: 20px;
+            background-image: url('/images/로니.png');
+        }
+
+        .profile-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .profile-text h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .profile-text p {
+            font-size: 1em;
+            margin-bottom: 30px;
+        }
+
+        .profile-text button {
+            background-color: #d11a1a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            align-self: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <a href="/home" class="nav-item">홈</a>
+        <a href="/calendar" class="nav-item">일정 관리</a>
+        <a href="/routine" class="nav-item">루틴</a>
+        <a href="dead/1" class="nav-item">운동 목록</a>
+        <a href="/matchlist" class="nav-item">매칭하기</a>
+        <div class="sub-nav-container">
+            <div class="sub-nav-row">
+                <a href="/login" class="sub-nav-item">로그인</a>
+                <a href="/calendar/week" class="sub-nav-item">주별 관리</a>
+                <a href="/routine" class="sub-nav-item">나의 루틴</a>
+                <a href="#" class="sub-nav-item">가이드/메모</a>
+                <a href="#" class="sub-nav-item">프로필 보기</a>
+            </div>
+            <div class="sub-nav-row">
+                <a href="/home" class="sub-nav-item">공지사항</a>
+                <a href="/calendar" class="sub-nav-item">월별 관리</a>
+                <a href="/routine" class="sub-nav-item">전체 루틴</a>
+                <a href="#" class="sub-nav-item"></a>
+                <a href="/matchlist/user1" class="sub-nav-item">리뷰</a>
+            </div>
+        </div>
+    </div>
+    <header class="header">
+        <% if(user) { %>
+            <div class="profile-placeholder"></div>
+        <% } %>
+        <div class="header-content">
+            <h1>최고의 운동 메이트를 찾으세요.</h1>
+            <p>운동 목표와 능력에 맞춘 운동 메이트를 찾아 최고의 시너지 효과를 내세요.</p>
+            <a href="/chat">
+                <button>매칭하기</button>
+            </a>
+        </div>
+    </header>
+    <main>
+        <section class="profile">
+            <% if(user) { %>
+                <div class="image-placeholder"></div>
+            <% } %>
+            <div class="profile-text">
+                <% if(user) { %>
+                    <h2><%= user.name %>님의 끝없는 도전!</h2>
+                    <p>상대에게 자신감 있는 나 자신을 보여주세요!</p>
+                    <button onclick="window.location.href='/logout'">로그아웃</button>
+                    <button>프로필 보기</button>
+                <% } else { %>
+                    <h3>로그인 해주세요.</h3>
+                    <button onclick="window.location.href='/login'">로그인</button>
+                <% } %>
+            </div>
+        </section>
+        <section class="schedule-gym-finder">
+            <button class="button-section schedule" onclick="window.location.href = '/calendar';">
+                <div style="display: flex; align-items: center;">
+                    <div style="margin-right: -30px;">
+                        <h2>운동 관리</h2>
+                        <p>나만의 운동 일정을 기록하세요!</p>
+                    </div>
+                    <div style="margin-left: 200px;">
+                        <img src="/images/일정.png" alt="이미지" style="width: 200px; height: 160px;">
+                    </div>
+                </div>
+            </button>
+            <button class="button-section gym-finder" onclick="window.open('https://map.naver.com/p/search/%EC%A3%BC%EB%B3%80%20%ED%97%AC%EC%8A%A4%EC%9E%A5?c=14.81,0,0,0,dh')">
+                <h2>주변 헬스장 찾기</h2>
+                <img src="/images/위치.png" alt="헬스장 이미지" style="display: block; float: right; margin-top: -10px; margin-left: auto;">
+            </button>
+        </section>
+        <section class="announcements">
+            <h2>공지사항</h2>
+            <p>FITNER 정식 오픈!</p>
+        </section>
+    </main>
+</body>
+</html>
